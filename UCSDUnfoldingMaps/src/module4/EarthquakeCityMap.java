@@ -83,7 +83,7 @@ public class EarthquakeCityMap extends PApplet {
 		//earthquakesURL = "test2.atom";
 		
 		// WHEN TAKING THIS QUIZ: Uncomment the next line
-		//earthquakesURL = "quiz1.atom";
+		earthquakesURL = "quiz1.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -101,6 +101,7 @@ public class EarthquakeCityMap extends PApplet {
 		//     STEP 3: read in earthquake RSS feed
 	    earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
 	    quakeMarkers = new ArrayList<Marker>();
+	    int count=0;
 	    
 	    for(PointFeature feature : earthquakes) {
 		  //check if LandQuake
@@ -110,9 +111,11 @@ public class EarthquakeCityMap extends PApplet {
 		  // OceanQuakes
 		  else {
 		    quakeMarkers.add(new OceanQuakeMarker(feature));
+		    count++;
 		  }
 	    }
 
+	    System.out.println("No. of oceam markers are : " + count);
 	    // could be used for debugging
 	    printQuakes();
 	 		
@@ -147,7 +150,7 @@ public class EarthquakeCityMap extends PApplet {
 					quakeLoc.setColor(color(255, 255, 0));
 					quakeLoc.setRadius(10);
 				}
-				else if (mag>=2.5)
+				else if (mag>2.5)
 				{
 					quakeLoc.setColor(color(0, 0, 255));
 					quakeLoc.setRadius(5);
@@ -235,11 +238,23 @@ public class EarthquakeCityMap extends PApplet {
 		for (Marker country:countryMarkers)
 		{
 			int quakeCount=0;
+			int oceanCount=0;
+			int USquakes=0;
 			for (PointFeature quakes: earthquakes)
+			{
+				
+					
 				if(isLand(quakes) && quakes.getStringProperty("country").equals((country.getStringProperty("name"))))
-				{quakeCount++;}
+				{quakeCount++;
+				if (quakes.getStringProperty("country").equals("China"))
+					USquakes++;}
+				else 
+					oceanCount++;
+			}
 			if (quakeCount!=0)
 				System.out.println( quakeCount + "\t" + country.getStringProperty("name"));
+			//System.out.println("Ocean quake count :"+ oceanCount);
+			//System.out.println("US quake count :"+ USquakes);
 		}
 	}
 	

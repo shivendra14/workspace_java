@@ -1,7 +1,9 @@
 package spelling;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +22,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     public AutoCompleteDictionaryTrie()
 	{
 		root = new TrieNode();
+		size=0;
 	}
 	
 	
@@ -29,7 +32,29 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean addWord(String word)
 	{
 	    //TODO: Implement this method.
+		boolean containsWord=true;
+		word=word.toLowerCase();
+		TrieNode child = root;
+		for(char c : word.toCharArray())
+		{
+			if (child.getValidNextCharacters().contains(c) && containsWord)
+			{
+			child = child.getChild(c);
+			}
+			else
+			{
+				containsWord=false;
+				child=child.insert(c);
+			}
+			//System.out.println(child.getText() + containsWord);
+		}
+		if (containsWord)
 	    return false;
+		else
+		{
+			child.setEndsWord(true);
+			return true;
+		}
 	}
 	
 	/** 
@@ -39,18 +64,79 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public int size()
 	{
 	    //TODO: Implement this method
-	    return 0;
+		return size(root);
+		
+	}
+	
+	private int size(TrieNode current)
+	{
+		int size=0;
+		if (current.endsWord())
+			size=1;
+		for (char c :current.getValidNextCharacters())
+		{
+			size+=size(current.getChild(c));
+		}
+	    return size;
 	}
 	
 	
 	/** Returns whether the string is a word in the trie */
 	@Override
-	public boolean isWord(String s) 
+	public boolean isWord(String word) 
 	{
 	    // TODO: Implement this method
-		return false;
+		return (pointOfDifference(word)==null)?true:false;
+		
 	}
 
+	private TrieNode pointOfDifference(String word) 
+	{
+	    // TODO: Implement this method
+		boolean containsWord=true;
+		word=word.toLowerCase();
+		TrieNode child = root;
+		for(char c : word.toCharArray())
+		{
+			if (child.getValidNextCharacters().contains(c) && containsWord)
+			child = child.getChild(c);
+			else
+			{
+				containsWord=false;
+				return child;
+			}
+			
+		}
+		if (child.endsWord() && child.getText().equals(word))
+			return null;
+		else
+			return child;
+		
+	}
+	
+	private TrieNode findStem(String word) 
+	{
+	    // TODO: Implement this method
+		boolean containsWord=true;
+		word=word.toLowerCase();
+		TrieNode child = root;
+		for(char c : word.toCharArray())
+		{
+			if (child.getValidNextCharacters().contains(c) && containsWord)
+			child = child.getChild(c);
+			else
+			{
+				containsWord=false;
+				return null;
+			}
+			
+		}
+		if (child.getText().equals(word))
+			return child;
+		else
+			return null;
+		
+	}
 	/** 
 	 *  * Returns up to the n "best" predictions, including the word itself,
      * in terms of length
@@ -76,7 +162,33 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
     	 
-         return null;
+    	 List<String> predictions=new ArrayList<>();
+    	 Queue<TrieNode> qu=new LinkedList<>();
+    	 List <TrieNode> visited= new ArrayList<>();
+    	 prefix=prefix.toLowerCase();
+    	 TrieNode curr=findStem(prefix);
+    	 if(curr==null)
+    		 return predictions;    	 
+    	 qu.add(curr);
+    	 visited.add(curr);
+    	 while (!qu.isEmpty())
+    	 {
+    		 curr=qu.poll();
+    		 if(curr.endsWord())
+    			 predictions.add(curr.getText());
+    		 for (char c :curr.getValidNextCharacters())
+    		 {
+    			 TrieNode next=curr.getChild(c);
+    			 if(!visited.contains(next))
+    			 {
+    				 qu.add(next);
+    				 visited.add(next);
+    			 }
+    		 }
+    	 }
+    	 
+    	 
+         return predictions.size()>numCompletions? predictions.subList(0, numCompletions) : predictions;
      }
 
  	// For debugging
