@@ -49,7 +49,7 @@ public class NearbyWordsGraderTwo {
             return;
         }
 
-        out.println(feedback += "Tests complete. Make sure everything looks right.");
+        out.println(feedback += "Tests complete. Make sure everything looks right.");System.out.println(feedback);
         out.close();
     }
 }

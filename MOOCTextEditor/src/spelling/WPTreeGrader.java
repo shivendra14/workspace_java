@@ -67,6 +67,7 @@ public class WPTreeGrader {
         }
 
         out.println(feedback + "Tests complete. Make sure everything looks right.");
+        System.out.println(feedback + "Tests complete. Make sure everything looks right.");
         out.close();
     }
 }
