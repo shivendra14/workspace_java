@@ -41,17 +41,18 @@ public class tree_height {
 				if (nodeHeights[vertex]!=0)
 					continue;
 				int height = 0;
-				for (int i = vertex; i != -1; i = parent[i])
-				{
+				int i=0;
+				for (i = vertex; i != -1 && nodeHeights[i]==0; i = parent[i])
 					height++;
-				}
+				
+				if(i!=-1)
+				height+=nodeHeights[i];
+				
 				if (maxHeight<height)
 					maxHeight=height;
 				
-				for (int i = vertex; i != -1; i = parent[i])
-				{
+				for (i = vertex; i != -1 && nodeHeights[i]==0; i = parent[i])
 					nodeHeights[i]=height--;
-				}
 			}
 			return maxHeight;
 		}
