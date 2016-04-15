@@ -1,0 +1,37 @@
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.PrintWriter;
+
+public class check_brackets_grader {
+    public static void main(String[] args) {
+        try
+        {
+            System.out.println("TestSuite for check Brackets:");
+            String testFolder="tests_check_brackets/";
+            BufferedReader br = new BufferedReader(new FileReader(testFolder+"01"));
+            BufferedReader ans = new BufferedReader(new FileReader(testFolder+"01.a"));
+            String line; String output;
+            //PrintWriter out = new PrintWriter("grader_output/module2.part1.out", "utf-8");
+            while ((line = br.readLine()) != null && (output = ans.readLine())!=null)
+            {
+                check_brackets doc = new check_brackets();
+                
+                int result = doc.faultPoint(line);
+                System.out.print(result);
+                if (result>=0)
+                System.out.println(output.equals(result));
+                else
+                System.out.println(output.equals("Success"));	
+               // out.print(result);
+            }
+            //out.print("\n");
+            //out.close();
+            br.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
