@@ -2,6 +2,7 @@ package module6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -85,7 +86,7 @@ public class EarthquakeCityMap extends PApplet {
 		//earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
-		//earthquakesURL = "quiz2.atom";
+		earthquakesURL = "quiz2.atom";
 		
 		
 		// (2) Reading in earthquake data and geometric properties
@@ -116,7 +117,10 @@ public class EarthquakeCityMap extends PApplet {
 	    }
 
 	    // could be used for debugging
+	    System.out.println("sorted Quakes:");
+	    sortAndPrint(150);
 	    printQuakes();
+	    
 	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
@@ -139,6 +143,45 @@ public class EarthquakeCityMap extends PApplet {
 	// TODO: Add the method:
 	//   private void sortAndPrint(int numToPrint)
 	// and then call that method from setUp
+	
+	private void sortAndPrint(int numToPrint)
+	{
+		Object quakeMarker[]=quakeMarkers.toArray();
+		int len=quakeMarker.length;
+		int i=0,j=0;
+		numToPrint=Math.min(numToPrint, len);
+		int count=0;
+		float prev=0;
+		for (i=0;i<numToPrint;i++)
+		{
+			EarthquakeMarker ei= (EarthquakeMarker)quakeMarker[i];
+			EarthquakeMarker esmall= ei;
+			int jsmall=i;
+			for(j=i+1;j<len;j++)
+			{
+				EarthquakeMarker ej= (EarthquakeMarker)quakeMarker[j];
+				if (esmall.compareTo(ej)>0)
+				{
+					esmall=ej;
+					jsmall=j;
+				}
+			}
+			if(jsmall!=i)
+			{
+				Object temp=quakeMarker[i];
+				quakeMarker[i]=quakeMarker[jsmall];
+				quakeMarker[jsmall]=temp;
+				if (prev==esmall.getMagnitude())
+					count++;
+				else count=0;
+				
+				if (count==3)
+					System.out.println("Count 3:  "+prev);
+				prev=esmall.getMagnitude();
+				System.out.print(esmall.getMagnitude()+"\t");
+			}
+		}
+	}
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
