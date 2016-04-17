@@ -116,9 +116,10 @@ public class EarthquakeCityMap extends PApplet {
 		  }
 	    }
 
-	    // could be used for debugging
 	    System.out.println("sorted Quakes:");
-	    sortAndPrint(150);
+	    sortAndPrint(10); //for top 10 earthquakes in magnitude
+	    
+	    // could be used for debugging
 	    printQuakes();
 	    
 	 		
@@ -150,8 +151,6 @@ public class EarthquakeCityMap extends PApplet {
 		int len=quakeMarker.length;
 		int i=0,j=0;
 		numToPrint=Math.min(numToPrint, len);
-		int count=0;
-		float prev=0;
 		for (i=0;i<numToPrint;i++)
 		{
 			EarthquakeMarker ei= (EarthquakeMarker)quakeMarker[i];
@@ -171,13 +170,6 @@ public class EarthquakeCityMap extends PApplet {
 				Object temp=quakeMarker[i];
 				quakeMarker[i]=quakeMarker[jsmall];
 				quakeMarker[jsmall]=temp;
-				if (prev==esmall.getMagnitude())
-					count++;
-				else count=0;
-				
-				if (count==3)
-					System.out.println("Count 3:  "+prev);
-				prev=esmall.getMagnitude();
 				System.out.print(esmall.getMagnitude()+"\t");
 			}
 		}
