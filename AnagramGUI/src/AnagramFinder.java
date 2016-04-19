@@ -13,6 +13,10 @@ JTextArea ta=new JTextArea(13,12);
         f.setLayout(new FlowLayout());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setResizable(false);
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        f.setLocation (dim.width/2 - f.getSize().width/2, dim.height/2 - f.getSize().height/2);
+        
         MenuBar mbar=new MenuBar();
         Menu help=new Menu("Help");
         final MenuItem item1;
@@ -26,6 +30,10 @@ JTextArea ta=new JTextArea(13,12);
                 f1.setSize(300,200);
                 f1.setResizable(false);
                 f1.setLayout(new BorderLayout());
+                
+                Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                f1.setLocation (dim.width/2 - f1.getSize().width/2, dim.height/2 - f1.getSize().height/2);
+                
                 JLabel l3=new JLabel("Anagram");
                 f1.add(l3,BorderLayout.NORTH);
                 JTextArea ta1=new JTextArea();

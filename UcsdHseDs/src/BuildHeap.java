@@ -39,6 +39,7 @@ public class BuildHeap {
       // but in the worst case gives a quadratic number of swaps.
       //
       // TODO: replace by a more efficient implementation
+      /*
       for (int i = 0; i < data.length; ++i) {
         for (int j = i + 1; j < data.length; ++j) {
           if (data[i] > data[j]) {
@@ -49,8 +50,39 @@ public class BuildHeap {
           }
         }
       }
+      */
+      int len=data.length;
+      for (int i=((len-1)-1)/2;i>=0 && len>1; i--)
+      {
+    	  shiftDown(i);
+      }
+      
     }
-
+    private void shiftDown(int i)
+    {
+    	int len=data.length;
+    	if (i> (int)((len-1)-1)/2 || len<=1)
+    		return;
+    	
+    	int leftChildIndex=2*i+1;
+    	int rightChildIndex=2*i+2;
+    	int minIndex=i;
+    	
+    	if (data[leftChildIndex] < data[minIndex])
+    		minIndex=leftChildIndex;
+    	if(data[rightChildIndex] < data[minIndex])
+    		minIndex=rightChildIndex;
+    	
+    	if (i!=minIndex)
+    	{
+    		swaps.add(new Swap(i, minIndex));
+            int tmp = data[minIndex];
+            data[minIndex] = data[i];
+            data[i] = tmp;
+            
+            shiftDown(minIndex);
+    	}
+    }
     public void solve() throws IOException {
         in = new FastScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
