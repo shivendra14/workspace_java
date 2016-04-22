@@ -68,9 +68,9 @@ public class BuildHeap {
     	int rightChildIndex=2*i+2;
     	int minIndex=i;
     	
-    	if (data[leftChildIndex] < data[minIndex])
+    	if (data[leftChildIndex] <= data[minIndex])
     		minIndex=leftChildIndex;
-    	if(data[rightChildIndex] < data[minIndex])
+    	if(data[rightChildIndex] <= data[minIndex])
     		minIndex=rightChildIndex;
     	
     	if (i!=minIndex)
