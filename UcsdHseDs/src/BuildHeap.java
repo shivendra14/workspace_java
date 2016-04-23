@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class BuildHeap {
-    private int[] data;
+    private long[] data;
     private List<Swap> swaps;
 
     private FastScanner in;
@@ -17,7 +17,7 @@ public class BuildHeap {
 
     private void readData() throws IOException {
         int n = in.nextInt();
-        data = new int[n];
+        data = new long[n];
         for (int i = 0; i < n; ++i) {
           data[i] = in.nextInt();
         }
@@ -61,22 +61,22 @@ public class BuildHeap {
     private void shiftDown(int i)
     {
     	int len=data.length;
-    	if (i> (int)((len-1)-1)/2 || len<=1)
+    	if (i> (int)(((len-1)-1)/2) || len<=1)
     		return;
     	
     	int leftChildIndex=2*i+1;
     	int rightChildIndex=2*i+2;
     	int minIndex=i;
     	
-    	if (data[leftChildIndex] <= data[minIndex])
+    	if (data[leftChildIndex] < data[minIndex])
     		minIndex=leftChildIndex;
-    	if(data[rightChildIndex] <= data[minIndex])
+    	if(rightChildIndex<len && data[rightChildIndex] < data[minIndex])
     		minIndex=rightChildIndex;
     	
     	if (i!=minIndex)
     	{
     		swaps.add(new Swap(i, minIndex));
-            int tmp = data[minIndex];
+            long tmp = data[minIndex];
             data[minIndex] = data[i];
             data[i] = tmp;
             
