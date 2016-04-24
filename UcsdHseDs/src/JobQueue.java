@@ -1,4 +1,7 @@
 import java.io.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class JobQueue {
@@ -32,6 +35,7 @@ public class JobQueue {
 
     private void assignJobs() {
         // TODO: replace this code with a faster algorithm.
+    	/*
         assignedWorker = new int[jobs.length];
         startTime = new long[jobs.length];
         long[] nextFreeTime = new long[numWorkers];
@@ -46,6 +50,39 @@ public class JobQueue {
             startTime[i] = nextFreeTime[bestWorker];
             nextFreeTime[bestWorker] += duration;
         }
+        */
+    	
+    	assignedWorker = new int[jobs.length];
+        startTime = new long[jobs.length];
+        
+        Comparator<Workers> compare=new Comparator<Workers>() {
+			@Override
+			public int compare(Workers o1, Workers o2) {
+				// TODO Auto-generated method stub
+				if (o1.freeAfter!=o2.freeAfter)
+					return o1.freeAfter<o2.freeAfter?-1:1;
+				else
+					return o1.workerIndex<o2.workerIndex?-1:1;
+			}
+		};
+		
+        PriorityQueue<Workers> nextFreeTime=new PriorityQueue<>(compare);
+        
+        //initializing  workers with default values.
+        for(int i=0;i<numWorkers;i++)
+        	nextFreeTime.add(new Workers(i,0));
+        
+        for (int i = 0; i < jobs.length; i++) {
+            int duration = jobs[i];
+            if(!nextFreeTime.isEmpty())
+            {
+            	Workers bestWorker=nextFreeTime.remove();
+            	assignedWorker[i] = bestWorker.workerIndex;
+                startTime[i] = bestWorker.freeAfter;
+                bestWorker.freeAfter+=duration;
+                nextFreeTime.add(bestWorker);
+            }
+        }
     }
 
     public void solve() throws IOException {
@@ -55,6 +92,17 @@ public class JobQueue {
         assignJobs();
         writeResponse();
         out.close();
+    }
+    
+    class Workers
+    {
+    	int workerIndex;
+    	long freeAfter;
+    	public Workers (int index, long busyTime)
+    	{
+    		workerIndex=index;
+    		freeAfter=busyTime;
+    	}
     }
 
     static class FastScanner {
