@@ -31,6 +31,8 @@ public class MergingTables {
         }
         Table getParent() {
             // find super parent and compress path
+        	if(!parent.equals(this))
+        		parent=parent.getParent();
             return parent;
         }
     }
@@ -40,12 +42,31 @@ public class MergingTables {
     void merge(Table destination, Table source) {
         Table realDestination = destination.getParent();
         Table realSource = source.getParent();
-        if (realDestination == realSource) {
-            return;
+        if (realDestination.equals(realSource)) {
+            return;          //no merge required as source and destination are same
         }
+        
         // merge two components here
         // use rank heuristic
+        Table lowerRankTable = realSource;
+        Table higherRankTable= realDestination;
+        if (realDestination.rank < realSource.rank)
+        {
+        	lowerRankTable=realDestination;
+        	higherRankTable=realSource;
+        }
+        
+        //peak of the tree will only be used to store the merged tables number of rows. 
+        higherRankTable.numberOfRows+=lowerRankTable.numberOfRows;
+        lowerRankTable.numberOfRows=0;
+        lowerRankTable.parent=higherRankTable;
+
+        if(lowerRankTable.rank==higherRankTable.rank)
+        {
+        	higherRankTable.rank++;  //rank increased due to merge
+        }
         // update maximumNumberOfRows
+        maximumNumberOfRows = Math.max(maximumNumberOfRows, higherRankTable.numberOfRows);
     }
 
     public void run() {
