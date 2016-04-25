@@ -1,3 +1,4 @@
+package week2;
 import java.util.*;
 
 public class FibonacciLastDigit {
