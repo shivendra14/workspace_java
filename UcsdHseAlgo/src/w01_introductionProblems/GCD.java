@@ -1,4 +1,4 @@
-package week2;
+package w01_introductionProblems;
 import java.util.*;
 
 public class GCD {

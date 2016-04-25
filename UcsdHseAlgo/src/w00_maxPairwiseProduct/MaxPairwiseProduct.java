@@ -1,4 +1,4 @@
-package week1;
+package w00_maxPairwiseProduct;
 import java.util.*;
 import java.io.*;
 
