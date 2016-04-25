@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class PhoneBook {
@@ -14,6 +16,8 @@ public class PhoneBook {
     // Keep list of all existing (i.e. not deleted yet) contacts.
     private List<Contact> contacts = new ArrayList<>();
 
+    private Map <Integer,Contact> map=new HashMap<>();
+    
     public static void main(String[] args) {
         new PhoneBook().processQueries();
     }
@@ -34,7 +38,7 @@ public class PhoneBook {
     }
 
 
-    private void processQuery(Query query) {
+    private void processQuery_nave(Query query) {
         if (query.type.equals("add")) {
             // if we already have contact with such number,
             // we should rewrite contact's name
@@ -61,6 +65,27 @@ public class PhoneBook {
                     response = contact.name;
                     break;
                 }
+            writeResponse(response);
+        }
+    }
+
+    private void processQuery(Query query) {
+        if (query.type.equals("add")) {
+            // if we already have contact with such number,
+            // we should rewrite contact's name
+                map.put(query.number,new Contact(query.name, query.number));
+            
+        } 
+        else if (query.type.equals("del")) {
+            map.remove(query.number);
+        } 
+        else {
+            String response = "not found";
+            boolean wasFound = map.containsKey(query.number);
+            if(wasFound)
+            {
+            	response=map.get(query.number).name;
+            }
             writeResponse(response);
         }
     }
