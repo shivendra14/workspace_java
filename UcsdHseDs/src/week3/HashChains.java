@@ -10,7 +10,7 @@ public class HashChains {
     private FastScanner in;
     private PrintWriter out;
     // store all strings in one list
-    private List<String> elems;
+    private List<String> hashArray[];
     // for hash function
     private int bucketCount;
     private int prime = 1000000007;
@@ -45,21 +45,36 @@ public class HashChains {
     }
 
     private void processQuery(Query query) {
+    	
+    	int inputHash=0;
+    	List <String> elems=null;
+    	if (!query.type.equals("check"))
+    	{
+    		inputHash=hashFunc(query.s);
+    		elems=hashArray[inputHash];
+    	}
+    	else
+    	{
+    		elems=hashArray[query.ind];
+    	}
         switch (query.type) {
             case "add":
-                if (!elems.contains(query.s))
+                if (elems.isEmpty()  || !elems.contains(query.s))
+                {
                     elems.add(0, query.s);
+                }
                 break;
             case "del":
-                if (elems.contains(query.s))
+                if (!elems.isEmpty() && elems.contains(query.s))
+                {
                     elems.remove(query.s);
+                }
                 break;
             case "find":
-                writeSearchResult(elems.contains(query.s));
+                writeSearchResult(!elems.isEmpty() && elems.contains(query.s));
                 break;
             case "check":
                 for (String cur : elems)
-                    if (hashFunc(cur) == query.ind)
                         out.print(cur + " ");
                 out.println();
                 // Uncomment the following if you want to play with the program interactively.
@@ -71,10 +86,12 @@ public class HashChains {
     }
 
     public void processQueries() throws IOException {
-        elems = new ArrayList<>();
         in = new FastScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
         bucketCount = in.nextInt();
+        hashArray =new ArrayList[bucketCount];
+        for (int i=0;i<hashArray.length;i++)
+        	hashArray[i] = new ArrayList<>();
         int queryCount = in.nextInt();
         for (int i = 0; i < queryCount; ++i) {
             processQuery(readQuery());

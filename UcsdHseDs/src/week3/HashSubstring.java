@@ -10,6 +10,10 @@ public class HashSubstring {
     private static FastScanner in;
     private static PrintWriter out;
 
+    // for hash function
+    private static int prime = 1000000007;
+    private static int multiplier = 263;
+    
     public static void main(String[] args) throws IOException {
         in = new FastScanner();
         out = new PrintWriter(new BufferedOutputStream(System.out));
@@ -30,7 +34,7 @@ public class HashSubstring {
         }
     }
 
-    private static List<Integer> getOccurrences(Data input) {
+    private static List<Integer> getOccurrences_nave(Data input) {
         String s = input.pattern, t = input.text;
         int m = s.length(), n = t.length();
         List<Integer> occurrences = new ArrayList<Integer>();
@@ -48,6 +52,64 @@ public class HashSubstring {
         return occurrences;
     }
 
+    private static List<Integer> getOccurrences(Data input) 
+    {
+    	List<Integer> occurrences = new ArrayList<Integer>();
+        String s = input.pattern, t = input.text;
+        int m = s.length(), n = t.length();
+        
+        if (m>n || n<1)  //pattern is bigger than text
+        	return occurrences;
+        
+        long patternHash= hashFunc(s);
+        long subStringHash = hashFunc( t.substring(0, m) ) ;
+        
+        for (int i = 0; i + m <= n; ++i) 
+        {   
+        	if(patternHash==subStringHash)
+        	{
+        		boolean equal = true;	 
+        		for (int j = 0; j < m; ++j) 
+        		{
+        			if (s.charAt(j) != t.charAt(i + j)) 
+        			{
+        				equal = false;
+        				break;
+        			}
+        		}
+        		if (equal)
+        			occurrences.add(i);
+        	}
+        	
+        	if (i+m < n)
+        	{
+        		//nextHash 
+        		subStringHash = rabinFingerprintRollingHash(subStringHash, m, t.charAt(i), t.charAt(i+m));
+        	}
+        }
+        return occurrences;
+    }
+    
+    private static long hashFunc(String s) {
+        long hash = 0;
+        for (int i = 0; i < s.length() ; i++)
+            hash = ((hash * multiplier  % prime+ s.charAt(i)))%prime;
+        return hash;
+    }
+    
+    private static long rabinFingerprintRollingHash(long prevHash, int patternLength, char startChar, char endChar)
+    {
+    	long newHash=0;
+    	//newHash = (long)(( (prevHash - startChar*Math.pow(multiplier, patternLength-1)% prime) *multiplier + endChar ) % prime) ;
+    	
+    	newHash = prevHash*multiplier %prime - (long)((startChar*Math.pow(multiplier, patternLength)  % prime - endChar) );
+    	
+    	newHash= (newHash +prime)%prime;
+    	//System.out.print(startChar + ""+endChar+"\t");
+    	//System.out.println(prevHash +"\t\t"+ newHash);
+    	return newHash;
+    }
+    
     static class Data {
         String pattern;
         String text;
