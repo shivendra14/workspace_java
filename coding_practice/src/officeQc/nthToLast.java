@@ -1,4 +1,4 @@
-package coding_practice;
+package officeQc;
 class node
 {
 	int data;
