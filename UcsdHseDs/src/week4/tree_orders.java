@@ -24,12 +24,13 @@ public class tree_orders {
 
 	public class TreeOrders {
 		int n;
-		int[] key, left, right;
+		long [] key;
+		int[] left, right;
 		
 		void read() throws IOException {
 			FastScanner in = new FastScanner();
 			n = in.nextInt();
-			key = new int[n];
+			key = new long[n];
 			left = new int[n];
 			right = new int[n];
 			for (int i = 0; i < n; i++) { 
@@ -39,31 +40,60 @@ public class tree_orders {
 			}
 		}
 
-		List<Integer> inOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
+		List<Long> inOrder() {
+			ArrayList<Long> result = new ArrayList<Long>();
                         // Finish the implementation
                         // You may need to add a new recursive method to do that
+			inorder_Helper(result,0);
                         
 			return result;
 		}
+		private void inorder_Helper(ArrayList<Long> result, int index)
+		{
+			if (index<key.length && index>-1)
+			{
+				inorder_Helper(result, left[index]);
+				result.add(key[index]);
+				inorder_Helper(result, right[index]);
+			}
+		}
 
-		List<Integer> preOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
+		List<Long> preOrder() {
+			ArrayList<Long> result = new ArrayList<>();
                         // Finish the implementation
                         // You may need to add a new recursive method to do that
+			preOrder_Helper(result,0);
                         
 			return result;
 		}
+		private void preOrder_Helper(ArrayList<Long> result, int index)
+		{
+			if (index<key.length && index>-1)
+			{
+				result.add(key[index]);
+				preOrder_Helper(result, left[index]);
+				preOrder_Helper(result, right[index]);
+			}
+		}
 
-		List<Integer> postOrder() {
-			ArrayList<Integer> result = new ArrayList<Integer>();
+		List<Long> postOrder() {
+			ArrayList<Long> result = new ArrayList<>();
                         // Finish the implementation
                         // You may need to add a new recursive method to do that
-                        
+			postOrder_Helper(result,0);            
 			return result;
+		}
+		
+		private void postOrder_Helper(ArrayList<Long> result, int index)
+		{
+			if (index<key.length && index>-1)
+			{
+				postOrder_Helper(result, left[index]);
+				postOrder_Helper(result, right[index]);
+				result.add(key[index]);
+			}
 		}
 	}
-
 	static public void main(String[] args) throws IOException {
             new Thread(null, new Runnable() {
                     public void run() {
@@ -75,8 +105,8 @@ public class tree_orders {
                 }, "1", 1 << 26).start();
 	}
 
-	public void print(List<Integer> x) {
-		for (Integer a : x) {
+	public void print(List<Long> x) {
+		for (Long a : x) {
 			System.out.print(a + " ");
 		}
 		System.out.println();
