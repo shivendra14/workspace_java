@@ -5,6 +5,13 @@ public class CoveringSegments {
 
     private static int[] optimalPoints(Segment[] segments) {
         //write your code here
+    	Comparator <Segment> comp = new Comparator<Segment> (){
+			@Override
+			public int compare(Segment arg0, Segment arg1) {
+				// TODO Auto-generated method stub
+				return arg0.start > arg1.start?1:-1;
+			}};
+    	Arrays.sort(segments,comp);
         int[] points = new int[2 * segments.length];
         for (int i = 0; i < segments.length; i++) {
             points[2 * i] = segments[i].start;
