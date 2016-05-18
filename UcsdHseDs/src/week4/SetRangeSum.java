@@ -47,17 +47,21 @@ public class SetRangeSum {
             return;
         }
         Vertex grandparent = v.parent.parent;
+        Vertex m=null;    //hanging node of v to be moved
         if (parent.left == v) {
-            Vertex m = v.right;
+            m = v.right;
             v.right = parent;
             parent.left = m;
         } else {
             // Implement this case yourself
-
+            m = v.left;
+            v.left = parent;
+            parent.right = m;
         }
         update(parent);
         update(v);
         v.parent = grandparent;
+        
         if (grandparent != null) {
             if (grandparent.left == parent) {
                 grandparent.left = v;
@@ -74,19 +78,26 @@ public class SetRangeSum {
             smallRotation(v);
         } else if (v.parent.right == v && v.parent.parent.right == v.parent) {
             // Implement this case yourself
+        	//Zig-Zag
+        	smallRotation(v);
+        	smallRotation(v.parent);
 
         } else {
             // Implement this case yourself
+        	//Zig
+        	smallRotation(v);
 
         }
     }
 
     // Makes splay of the given vertex and returns the new root.
     Vertex splay(Vertex v) {
-        if (v == null) return null;
+    	
+    	if (v == null) return null;
+        
         while (v.parent != null) {
             // Complete the implementation of splay
-
+        bigRotation(v);
         }
         return v;
     }
@@ -106,17 +117,20 @@ public class SetRangeSum {
     // and calls splay for the deepest visited node after that.
     // Returns pair of the result and the new root.
     // If found, result is a pointer to the node with the given key.
+    
     // Otherwise, result is a pointer to the node with the smallest
     // bigger key (next value in the order).
+    
     // If the key is bigger than all keys in the tree,
     // then result is null.
     VertexPair find(Vertex root, int key) {
         Vertex v = root;
         Vertex last = root;
-        Vertex next = null;
+        Vertex result = null;
         while (v != null) {
-            if (v.key >= key && (next == null || v.key < next.key)) {
-                next = v;
+        	//if key is greater than (or equal  to) input BUT ALSO less than the history we already have.
+            if (v.key >= key && (result == null || v.key < result.key)) {   
+                result = v;
             }
             last = v;
             if (v.key == key) {
@@ -129,21 +143,41 @@ public class SetRangeSum {
             }
         }
         root = splay(last);
-        return new VertexPair(next, root);
+        return new VertexPair(result, root);
     }
 
     VertexPair split(Vertex root, int key) {
         VertexPair result = new VertexPair();
-        VertexPair findAndRoot = find(root, key);
-        root = findAndRoot.right;
-        result.right = findAndRoot.left;
+        VertexPair findAndRoot = find(root, key);  //nearest keys to inputKey on left and right both inclusive 
+        
+        Vertex nearLeft = findAndRoot.right;
+        Vertex nearRight= findAndRoot.left;
+        
+        //nearLeft is Root from find.		This is the last visited. i.e. just greater or less than number
+        //nearRight is Result from find.	This is a number just greater than Input
+        
+        root = findAndRoot.right; 			//(splayed to top) this is just less than input
+        result.right = findAndRoot.left;   	// this is just greater than input
+        
+        //if no element is grater than input
+        //then left subtree has all elements
         if (result.right == null) {
             result.left = root;
             return result;
         }
+        
+        //getting the larger number to top of tree
         result.right = splay(result.right);
+        
         // Complete the implementation of split
-
+        result.left =result.right.left;
+        if (result.left==null)
+        	return result;
+        
+        Vertex Right=result.right.right;
+        result.right.right=null;
+        result.right=merge(Right,result.right);
+        
         return result;
     }
 
@@ -152,7 +186,16 @@ public class SetRangeSum {
         if (right == null) return left;
         // Complete the implementation of merge
 
-        return left;
+        //largest element of left subtree to be chosen as new root 
+        Vertex root =left;
+        while (root.right!=null)
+        	root=root.right;
+        
+        //bring the largest element to top by using splay
+        root=splay(root);
+        root.right=right;
+        
+        return root;
     }
 
     // Code that uses splay tree to solve the problem
@@ -174,13 +217,27 @@ public class SetRangeSum {
 
     void erase(int x) {
         // Implement erase yourself
+    	VertexPair pair=find(root,x);
+    	Vertex result=pair.left;
+    	Vertex newRoot =pair.right;
+    	
+    	if (result.key != x)
+    		return; // no such key
+    	
+    	splay(newRoot.right);
+    	splay(newRoot);
+    	newRoot.right.left=newRoot.left;
+    	newRoot.left.parent=newRoot.right;
+    	
 
     }
 
     boolean find(int x) {
         // Implement find yourself
+    	VertexPair v=find(root,x);
+    	return (v.left!=null && v.left.key==x);
 
-        return false;
+        //return false;
     }
 
     long sum(int from, int to) {
@@ -192,6 +249,7 @@ public class SetRangeSum {
         Vertex right = middleRight.right;
         long ans = 0;
         // Complete the implementation of sum
+        ans=middle.sum;
 
         return ans;
     }

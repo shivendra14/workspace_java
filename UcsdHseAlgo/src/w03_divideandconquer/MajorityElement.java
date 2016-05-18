@@ -4,13 +4,15 @@ import java.io.*;
 
 public class MajorityElement {
     private static int getMajorityElement(int[] a, int left, int right) {
-        if (left == right) {
-            return -1;
-        }
-        if (left + 1 == right) {
-            return a[left];
-        }
         //write your code here
+    	HashMap <Integer,Integer> map=new HashMap<>();
+    	for (int i:a)
+    	{
+    		int count= map.containsKey(i)? map.get(i)+1 : 1;
+    		map.put(i, count);
+    		if (count >a.length/2)
+    			return 1;
+    	}
         return -1;
     }
 
