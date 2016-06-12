@@ -3,7 +3,48 @@ import java.util.*;
 
 public class Dijkstra {
     private static int distance(ArrayList<Integer>[] adj, ArrayList<Integer>[] cost, int s, int t) {
-        return -1;
+        int result=-1;
+        HashSet<Integer> visited = new HashSet<>();   
+        HashMap<Integer,Integer> parent = new HashMap<>();
+        HashMap<Integer,Integer> minDist = new HashMap<>();
+        for(int i=0;i<adj.length;i++)
+        	minDist.put(i,Integer.MAX_VALUE);
+        
+        Comparator<Integer> cmp=new Comparator<Integer>() {
+			public int compare(Integer o1, Integer o2) {
+				return minDist.get(o1)-minDist.get(o2);
+			}
+		};
+        PriorityQueue<Integer> pq=new PriorityQueue<>(cmp);
+        
+        pq.add(s);
+        minDist.put(s, 0);
+        while (!pq.isEmpty())
+        {
+        	int curr=pq.poll();
+        	if (!visited.contains(curr))
+        	{
+        		visited.add(curr);
+        		if (curr==t) break;
+        		ArrayList<Integer> neighbors=adj[curr];
+        		ArrayList<Integer> nCost = cost[curr];
+        		for (int index=0; index<neighbors.size(); index++ )
+        		{
+        			int n= neighbors.get(index);
+        			if(visited.contains(n)) continue;
+        			int nC=nCost.get(index);
+        			       			
+        			int newCost = minDist.get(curr) + nC;
+        			if (minDist.get(n)> newCost)
+        			{
+        				minDist.put(n,newCost);
+        				parent.put(n,curr);
+        				pq.add(n);
+        			}
+        		}
+        	}
+        }
+    	return minDist.get(t)==Integer.MAX_VALUE?-1 :minDist.get(t);
     }
 
     public static void main(String[] args) {
